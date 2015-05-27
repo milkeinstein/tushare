@@ -56,15 +56,12 @@ def get_quarts(start, end):
     return [str(d).split('Q') for d in idx]
 
 
-def is_holiday(date=None):
+def is_holiday(date):
     d = datetime.datetime.strptime(date, '%Y-%m-%d')
     d_str = d.strftime('%Y%m%d')
     url = 'http://www.easybots.cn/api/holiday.php?d=' + d_str
-
     page = urllib.urlopen(url)
-
     date_info = json.load(page)
-
     if date_info[d_str] == 0:
         return False
     else:
