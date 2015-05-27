@@ -2,6 +2,8 @@
 
 import datetime
 import pandas as pd
+import urllib
+import json
 
 def year_qua(date):
     mon = date[5:7]
@@ -52,3 +54,18 @@ def get_quarts(start, end):
     idx = pd.period_range('Q'.join(year_qua(start)), 'Q'.join(year_qua(end)),
                           freq='Q-JAN')
     return [str(d).split('Q') for d in idx]
+
+
+def is_holiday(date=None):
+    d = datetime.datetime.strptime(date, '%Y-%m-%d')
+    d_str = d.strftime('%Y%m%d')
+    url = 'http://www.easybots.cn/api/holiday.php?d=' + d_str
+
+    page = urllib.urlopen(url)
+
+    date_info = json.load(page)
+
+    if date_info[d_str] == 0:
+        return False
+    else:
+        return True
