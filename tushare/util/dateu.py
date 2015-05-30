@@ -1,9 +1,11 @@
-# -*- coding:utf-8 -*- 
+# -*- coding:utf-8 -*-
 
 import datetime
 import pandas as pd
 import urllib
 import json
+import holiday_info
+
 
 def year_qua(date):
     mon = date[5:7]
@@ -56,13 +58,23 @@ def get_quarts(start, end):
     return [str(d).split('Q') for d in idx]
 
 
-def is_holiday(date):
+def is_weekend(date):
     d = datetime.datetime.strptime(date, '%Y-%m-%d')
-    d_str = d.strftime('%Y%m%d')
-    url = 'http://www.easybots.cn/api/holiday.php?d=' + d_str
-    page = urllib.urlopen(url)
-    date_info = json.load(page)
-    if date_info[d_str] == 0:
-        return False
+    return d.weekday() > 4
+
+
+def is_sse_holiday(date):
+    return is_weekend(date) or (date in holiday_info.sse_holiday)
+
+
+def is_ib_holiday(date):
+    return date in holiday_info.ib_workday or not is_sse_holiday()
+
+
+def is_holiday(date, exchange_name='sse'):
+    if exchange_name == 'sse':
+        return is_sse_holiday(date)
+    elif exchange_name == 'ib':
+        return is_ib_holiday(date)
     else:
-        return True
+        return False
