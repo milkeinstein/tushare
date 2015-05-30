@@ -2,9 +2,7 @@
 
 import datetime
 import pandas as pd
-import urllib
-import json
-import holiday_info
+import holidayinfo
 
 
 def year_qua(date):
@@ -64,11 +62,11 @@ def is_weekend(date):
 
 
 def is_sse_holiday(date):
-    return is_weekend(date) or (date in holiday_info.sse_holiday)
+    return is_weekend(date) or (date in holidayinfo.sse_holiday)
 
 
 def is_ib_holiday(date):
-    return date in holiday_info.ib_workday or not is_sse_holiday()
+    return date in holidayinfo.ib_workday or not is_sse_holiday()
 
 
 def is_holiday(date, exchange_name='sse'):
